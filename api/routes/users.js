@@ -17,7 +17,7 @@ router.post('/message', async function (req, res, next) {
   res.json(req.body)
 })
 
-router.post('/get_all', async function (req, res, next) {
+router.get('/get_all', async function (req, res, next) {
   const collection = await client.db('test').collection('test_collection')
   await client.connect()
   const result = await collection.find({}).toArray()

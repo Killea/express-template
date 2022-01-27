@@ -41,17 +41,11 @@
 
 <script>
 export default {
-  async asyncData ({ $http }) {
-    const test = await $http.$post('/api/get_all')
-    return {
-      test
-    }
-  },
   data () {
     return { inputText: null, tableData: [] }
   },
   async mounted () {
-    const test = await this.$http.$post('/api/get_all')
+    const test = await this.$http.$get('/api/get_all')
     this.tableData = test.map(item => ({ message: item.message }))
   },
   methods: {
