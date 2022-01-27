@@ -2,26 +2,27 @@ const { Router } = require('express')
 
 const router = Router()
 
-// Mock Users
-const users = [
-  { name: 'Alexandre' },
-  { name: 'Pooya' },
-  { name: 'Sébastien' }
-]
+const { MongoClient } = require('mongodb')
+// const test = require('./routes/test')
 
-/* GET users listing. */
-router.get('/users', function (req, res, next) {
-  res.json(users)
+const uri = 'mongodb+srv://fbms:AUqLM.9S4EW26.R@cluster0.f5rok.mongodb.net/test?retryWrites=true&w=majority'
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+
+router.post('/message', async function (req, res, next) {
+  const collection = await client.db('test').collection('test_collection')
+  await client.connect()
+  await collection.insertOne(req.body)
+  client.close()
+  console.log(req.body)
+  res.json(req.body)
 })
 
-/* GET user by ID. */
-router.get('/users/:id', function (req, res, next) {
-  const id = parseInt(req.params.id)
-  if (id >= 0 && id < users.length) {
-    res.json(users[id])
-  } else {
-    res.sendStatus(404)
-  }
+router.post('/get_all', async function (req, res, next) {
+  const collection = await client.db('test').collection('test_collection')
+  await client.connect()
+  const result = await collection.find({}).toArray()
+  client.close()
+  res.json(result)
 })
 
 module.exports = router

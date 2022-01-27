@@ -3,6 +3,10 @@ const express = require('express')
 // Create express instance
 const app = express()
 
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
 // Require API routes
 const users = require('./routes/users')
 const test = require('./routes/test')

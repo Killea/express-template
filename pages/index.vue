@@ -1,91 +1,75 @@
 <template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        nuxt-express
-      </h1>
-      <div>
-        {{ test }}
-        <div class="links">
-          <a
-            href="/users"
-            class="button--green"
-          >
-            Users List
-          </a>
-        </div>
-      </div>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
+  <div>
+    <el-header>
+      <el-row :gutter="20">
+        <el-col :span="21">
+          <div class="grid-content bg-purple">
+            <el-input v-model="inputText" placeholder="please input..." />
+          </div>
+        </el-col>
+        <el-col :span="3">
+          <el-button type="primary" @click="postMessage">
+            Post a message
+          </el-button>
+        </el-col>
+      </el-row>
+    </el-header>
+    <el-main>
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="date"
+          label="date"
+          width="180"
+        />
+        <el-table-column
+          prop="name"
+          label="name"
+          width="180"
+        />
+        <el-table-column
+          prop="message"
+          label="message"
+        />
+      </el-table>
+    </el-main>
   </div>
 </template>
 
 <script>
 export default {
   async asyncData ({ $http }) {
-    const test = await $http.$get('/api/test')
+    const test = await $http.$post('/api/get_all')
     return {
       test
+    }
+  },
+  data () {
+    return { inputText: null, tableData: [] }
+  },
+  async mounted () {
+    const test = await this.$http.$post('/api/get_all')
+    this.tableData = test.map(item => ({ message: item.message }))
+  },
+  methods: {
+    async postMessage () {
+      await this.$http.$post('/api/message',
+        {
+          message: this.inputText || 'No message',
+          type: 'msg'
+        }
+      )
+      window.location.reload(true)
     }
   }
 }
 </script>
 
 <style scoped>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
+  .el-row {
+    margin-top: 20px;
+  }
 </style>
