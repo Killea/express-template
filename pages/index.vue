@@ -45,12 +45,12 @@ export default {
     return { inputText: null, tableData: [] }
   },
   async mounted () {
-    const test = await this.$http.$get('/api/get_all')
+    const test = await this.$http.$get('/api/users')
     this.tableData = test.map(item => ({ message: item.message }))
   },
   methods: {
     async postMessage () {
-      await this.$http.$post('/api/message',
+      await this.$http.$post('/api/test',
         {
           message: this.inputText || 'No message',
           type: 'msg'
